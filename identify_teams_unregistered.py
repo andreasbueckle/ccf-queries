@@ -1,9 +1,9 @@
 import csv
 import json
 
-
 def main():
 
+    # capture data from the input file in a data structure (Missing Registration class)
     missing_registrations = []
 
     with open("data/datasets-without-registered-samples-2-14-2022.tsv") as file:
@@ -16,57 +16,61 @@ def main():
             missing = MissingRegistration(
                 line[0], line[1], line[2], line[3], line[4], line[5], line[6], line[7])
             missing_registrations.append(missing)
-    
+
         names = set()
         for item in missing_registrations:
             names.add(item.organ_created_by_user_email)
 
+        # create dictionary to capture relevant data for output (email, hubmap_id, submission_id)
         missing_registrations_dict = {}
         for item in missing_registrations:
             if item.organ_created_by_user_email in missing_registrations_dict:
-                missing_registrations_dict[item.organ_created_by_user_email].append(
+                missing_registrations_dict[item.organ_created_by_user_email]["hubmap_id"].append(
                     item.samples_without_location_hubmap_id)
+                missing_registrations_dict[item.organ_created_by_user_email]["submission_id"].append(
+                    item.samples_without_location_sub_id)
             else:
-                missing_registrations_dict[item.organ_created_by_user_email] = [item.samples_without_location_hubmap_id
-                ]
+                missing_registrations_dict[item.organ_created_by_user_email] = {
+                    "hubmap_id": [item.samples_without_location_hubmap_id],
+                    "submission_id": [item.samples_without_location_sub_id]
+                }
 
-    # flatten lists for all creators and remove duplicates
-    for i in missing_registrations_dict:
-        missing_registrations_dict[i] = flatten(missing_registrations_dict[i])
-
-    for i in missing_registrations_dict.keys():
-        missing_registrations_dict[i] = remove_duplicate(
-            missing_registrations_dict[i])
+    # flatten lists for all creator emails and remove duplicates
+    for email in missing_registrations_dict:
+        missing_registrations_dict[email]["hubmap_id"] = remove_duplicate(flatten(
+            missing_registrations_dict[email]["hubmap_id"]))
+        missing_registrations_dict[email]["submission_id"] = remove_duplicate(flatten(
+            missing_registrations_dict[email]["submission_id"]))
 
     # save as json
     json_object = json.dumps(missing_registrations_dict, indent=4)
     with open('output/samples_without_rui_location.json', 'w') as outfile:
         outfile.write(json_object)
-        
+
     # save as csv
     f = open('output/samples_without_rui_location.csv', 'w', newline='')
     writer = csv.writer(f)
-    writer.writerow(["email","sample_id"])
+    writer.writerow(["email", "sample_id", "submission_id"])
     for tuple in missing_registrations_dict.items():
-        for id in tuple[1]:
-            row = [tuple[0], id]
+
+        for i in range(0, len(tuple[1]["hubmap_id"])):
+            row = [tuple[0], tuple[1]["hubmap_id"]
+                   [i], tuple[1]["submission_id"][i]]
             writer.writerow(row)
     f.close()
 
-# utility function 
+# utility functions
 def remove_duplicate(list):
     """
     A function to remove duplicates in a list
     """
     result = []
-    temp_result = set()
-    for l in list:
-        temp_result.add(l)
-    for item in temp_result:
-        result.append(item)
+    for item in list:
+        if item not in result:
+            result.append(item)
     return result
 
-# utility function
+
 def flatten(list):
     """
     A function to flatten nested lists into 1D lists
@@ -80,6 +84,7 @@ def flatten(list):
         else:
             result.append(l.strip("[]"))
     return result
+
 
 class MissingRegistration:
     """
@@ -96,6 +101,7 @@ class MissingRegistration:
         self.organ_group_name = org_grp_name
         self.organ_created_by_user_email = email
 
+
 # driver code
 if __name__ == '__main__':
-  main()
+    main()
