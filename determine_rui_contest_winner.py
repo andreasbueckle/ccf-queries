@@ -1,4 +1,3 @@
-from re import S
 import requests
 from dateutil import parser
 
