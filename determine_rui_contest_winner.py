@@ -2,8 +2,8 @@ import requests
 from dateutil import parser
 
 def main():   
-    contest_start_date = "2021-02-14 00:00:00"
-    contest_end_date = "2021-03-04 23:59:59"
+    contest_start_date = "2022-02-14 00:00:00"
+    contest_end_date = "2022-03-04 23:59:59"
 
     # first, let's get the most recent data
     # To get TOKEN for viewing unpublished data, go to EUI, log in, then view source, then copy token from browser
@@ -24,8 +24,8 @@ def main():
                 as_date_time = parser.parse(
                     sample['rui_location']['creation_date'])
                 if as_date_time > parser.parse(contest_start_date) and as_date_time < parser.parse(contest_end_date):
-                    print(as_date_time)
-                    print(sample)
+                    # print(as_date_time)
+                    # print(sample)
                     component = sample['label'].split(',')[2].strip()
                     dates.append(as_date_time)
                     components.append(component)
@@ -62,7 +62,7 @@ def main():
             date_counts[as_string] = 1
         else:
             date_counts[as_string] += 1
-    print(date_counts)
+    # print(date_counts)
  
 
     # find out submissions by organ
@@ -72,19 +72,19 @@ def main():
             organ_counts[item] = 1
         else:
             organ_counts[item] += 1
-    print(organ_counts)
+    # print(organ_counts)
     
     # determine unique organ/creator combos (for trophies)
     organ_by_creator = []
     for i in range(0, len(organs)):
         organ_by_creator.append((organs[i], components[i]))
-    print(organ_by_creator)
+    # print(organ_by_creator)
 
     unique = []
     for combo in organ_by_creator:
         if combo not in unique:
             unique.append(combo)
-    print(unique)
+    # print(unique)
 
 # driver code
 if __name__ == '__main__':
