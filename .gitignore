@@ -1,4 +1,5 @@
 *.gsheet
 *.gslides
 *.ini
+*.gdoc
 playground.py

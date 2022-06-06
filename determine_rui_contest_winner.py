@@ -1,43 +1,54 @@
 import requests
 from dateutil import parser
 
-def main():   
-    contest_start_date = "2022-02-14 00:00:00"
-    contest_end_date = "2022-03-04 23:59:59"
+
+def main():
+    contest_start_date = "2022-01-01 00:00:00"
+    contest_end_date = "2022-05-31 23:59:59"
 
     # first, let's get the most recent data
     # To get TOKEN for viewing unpublished data, go to EUI, log in, then view source, then copy token from browser
     TOKEN = ""
     endpoint = "https://ccf-api.hubmapconsortium.org/v1/hubmap/rui_locations.jsonld"
     headers = {"Authorization": "Bearer " + TOKEN}
-    data = requests.post(endpoint, headers=headers).json()
+    data = requests.get(endpoint, headers=headers).json()
 
     # create empty arrays to capture data
     dates = []
     components = []
     organs = []
     people = []
+    tmc_person_pairs = {}
+    person_organ_pairs = {}
 
     for item in data['@graph']:
         for sample in item['samples']:
-                # Parse string as datetime object to detemine if in contest range
-                as_date_time = parser.parse(
-                    sample['rui_location']['creation_date'])
-                if as_date_time > parser.parse(contest_start_date) and as_date_time < parser.parse(contest_end_date):
-                    # print(as_date_time)
-                    # print(sample)
-                    component = sample['label'].split(',')[2].strip()
-                    dates.append(as_date_time)
-                    components.append(component)
-                    organs.append(sample['rui_location']
-                                  ['placement']['target'])
-                    people.append(sample['rui_location']['creator'].strip())
+            # Parse string as datetime object to detemine if in contest range
+            as_date_time = parser.parse(
+                sample['rui_location']['creation_date'])
+            if as_date_time > parser.parse(contest_start_date) and as_date_time < parser.parse(contest_end_date):
+                # print(as_date_time)
+                # print(sample)
+                component = sample['label'].split(',')[2].strip()
+                dates.append(as_date_time)
+                components.append(component)
+                organs.append(sample['rui_location']
+                              ['placement']['target'])
+                people.append(sample['rui_location']['creator'].strip())
+                tmc_person_pairs[sample['label'].split(
+                    ',')[2].strip()] = sample['rui_location']['creator'].strip()
+                person_organ_pairs[sample['rui_location']['creator'].strip(
+                )] = sample['rui_location']['placement']['target']
+
+    # print(tmc_person_pairs)
+    # print(person_organ_pairs)
+    # print(organs)
 
     winners = []
     for p in people:
         if p.lower() not in winners:
             winners.append(p.lower())
-    print(winners)
+    # print(winners)
 
     # count submission per team
     counts = {}
@@ -46,13 +57,13 @@ def main():
             counts[item] = 1
         else:
             counts[item] += 1
-    print(counts)
+    # print(counts)
 
     # now, let's count all the submissions in the contest
     total_submissions = 0
     for item in counts:
         total_submissions += counts[item]
-    print("Total #submissions: " + str(total_submissions)) 
+    # print("Total #submissions: " + str(total_submissions))
 
     # Find out on which dates blocks were submitted
     date_counts = {}
@@ -63,7 +74,6 @@ def main():
         else:
             date_counts[as_string] += 1
     # print(date_counts)
- 
 
     # find out submissions by organ
     organ_counts = {}
@@ -73,7 +83,7 @@ def main():
         else:
             organ_counts[item] += 1
     # print(organ_counts)
-    
+
     # determine unique organ/creator combos (for trophies)
     organ_by_creator = []
     for i in range(0, len(organs)):
@@ -85,6 +95,14 @@ def main():
         if combo not in unique:
             unique.append(combo)
     # print(unique)
+
+    print(f'''
+person_organ_pairs: { person_organ_pairs}
+counts: { counts }
+total_submissions: {total_submissions }
+date_counts: { date_counts}
+''')
+
 
 # driver code
 if __name__ == '__main__':
