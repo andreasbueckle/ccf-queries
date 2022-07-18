@@ -3,8 +3,8 @@ from dateutil import parser
 
 
 def main():
-    contest_start_date = "2022-01-01 00:00:00"
-    contest_end_date = "2022-05-31 23:59:59"
+    contest_start_date = "2022-06-01 00:00:00"
+    contest_end_date = "2022-07-17 23:59:59"
 
     # first, let's get the most recent data
     # To get TOKEN for viewing unpublished data, go to EUI, log in, then view source, then copy token from browser
