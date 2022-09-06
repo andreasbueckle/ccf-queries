@@ -7,40 +7,56 @@ def main():
     endpoint = "https://entity.api.hubmapconsortium.org/entities/"
     headers = {"Authorization": "Bearer " + TOKEN}
 
-    obj = []
+    obj_list = []
 
     file = open("HuBMAP_IDs.csv", "r")
 
     for line in file:
         if "Kidney" in line.split(",")[2]:
             if "none" not in line.split(",")[4]:
-                print("now going for " + line.split(",")[1])
+
                 ancestor_id = requests.get(
                     endpoint + line.split(",")[1], headers=headers).json()["direct_ancestors"][0]["hubmap_id"]
-                print("found: " + ancestor_id)
-                print()
-                rui_location = requests.get(
-                    endpoint + ancestor_id, headers=headers).json()["direct_ancestor"]["rui_location"]
-                obj.append({
+
+                contains_renal_pyramid = False
+
+                try:
+                    rui_location = requests.get(
+                        endpoint + ancestor_id, headers=headers).json()["direct_ancestor"]["rui_location"]
+                except:
+                    rui_location = {
+                        "ccf_annotations": []
+                    }
+                    print("An exception occurred")
+                if "http://purl.obolibrary.org/obo/UBERON_0004200" in rui_location["ccf_annotations"]:
+                    contains_renal_pyramid = True
+                    print(ancestor_id)                    
+                obj_list.append({
                     "hubmap_id": line.split(",")[1],
                     "type": line.split(",")[2],
                     "ancestor_hubmap_id": ancestor_id,
-                    "ccf_annotations": rui_location["ccf_annotations"]
+                    # "ccf_annotations": rui_location["ccf_annotations"],
+                    "contains_renal_pyramid": contains_renal_pyramid,
+                    "rui_location": rui_location
                 })
-                # print(obj)
 
-    print(obj)
+    print(obj_list)
     file.close()
 
-    f = open("is_rui_registered.csv", "a")
-    f.write("hubmap_id,type,source_id" + "\n")
-    for key in dict:
-        data = requests.get(endpoint + key, headers=headers).json()
-        # print(key)
-        # print(dict[key])
-        f.write(key + "," + dict[key].strip() + "," +
-                data["direct_ancestors"][0]["hubmap_id"] + "\n")
+    f = open("is_rui_registered.csv", "w")
+    f.write("hubmap_id,ancestor,contains_renal_pyramid" + "\n")
+    for obj in obj_list:
+        f.write(obj["hubmap_id"] + "," + obj["ancestor_hubmap_id"] 
+                # + "," + ";".join(obj["ccf_annotations"]) 
+                + ","
+                + str(obj["contains_renal_pyramid"]) + "\n")
+        if "@context" in obj["rui_location"]:
+            json_object = json.dumps(obj["rui_location"], indent=4)
+            with open("rui_locations_hra_preview" + "/" + obj["ancestor_hubmap_id"] + ".json", "w") as outfile:
+                outfile.write(json_object)
     f.close()
+
+    # url for renal pyramid: http://purl.obolibrary.org/obo/UBERON_0004200
 
 
 if __name__ == "__main__":
