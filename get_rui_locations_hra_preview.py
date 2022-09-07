@@ -36,8 +36,7 @@ def main():
                     "type": line.split(",")[2],
                     "ancestor_hubmap_id": ancestor_id,
                     "contains_renal_pyramid": contains_renal_pyramid,
-                    "rui_location": rui_location,
-                    "link_to_ct_data" : 
+                    "rui_location": rui_location
                 })
 
     print(obj_list)
