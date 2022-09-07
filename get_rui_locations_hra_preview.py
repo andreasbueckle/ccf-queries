@@ -3,7 +3,7 @@ import json
 
 
 def main():
-    TOKEN = "AggxOzWlzqkwJBMoYrq83V4xJV5llb8kKV5bQabb4yMpljB7v8UJC1WKnykXd6GDv9rwV9B02942YU0dqG3XsM3WQ"
+    TOKEN = ""
     endpoint = "https://entity.api.hubmapconsortium.org/entities/"
     headers = {"Authorization": "Bearer " + TOKEN}
 
@@ -35,9 +35,9 @@ def main():
                     "hubmap_id": line.split(",")[1],
                     "type": line.split(",")[2],
                     "ancestor_hubmap_id": ancestor_id,
-                    # "ccf_annotations": rui_location["ccf_annotations"],
                     "contains_renal_pyramid": contains_renal_pyramid,
-                    "rui_location": rui_location
+                    "rui_location": rui_location,
+                    "link_to_ct_data" : 
                 })
 
     print(obj_list)
@@ -47,7 +47,6 @@ def main():
     f.write("hubmap_id,ancestor,contains_renal_pyramid" + "\n")
     for obj in obj_list:
         f.write(obj["hubmap_id"] + "," + obj["ancestor_hubmap_id"] 
-                # + "," + ";".join(obj["ccf_annotations"]) 
                 + ","
                 + str(obj["contains_renal_pyramid"]) + "\n")
         if "@context" in obj["rui_location"]:
@@ -55,9 +54,7 @@ def main():
             with open("rui_locations_hra_preview" + "/" + obj["ancestor_hubmap_id"] + ".json", "w") as outfile:
                 outfile.write(json_object)
     f.close()
-
     # url for renal pyramid: http://purl.obolibrary.org/obo/UBERON_0004200
-
 
 if __name__ == "__main__":
     main()
