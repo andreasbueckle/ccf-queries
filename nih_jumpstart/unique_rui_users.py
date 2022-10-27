@@ -27,6 +27,7 @@ def main():
     tmc_person_pairs = {}
     person_organ_pairs = {}
     unique_users = set()
+    unique_teams = set()
 
     for item in data['@graph']:
         for sample in item['samples']:
@@ -48,6 +49,7 @@ def main():
                 )] = sample['rui_location']['placement']['target']
                 
                 unique_users.add(sample['rui_location']['creator'].strip().lower())
+                unique_teams.add(sample['label'].split(',')[2].strip())
                   
 
     # print(tmc_person_pairs)
@@ -113,6 +115,8 @@ total_submissions: {total_submissions }
 date_counts: { date_counts}
 unique_users: {unique_users}
 number of unique_users: {len(unique_users)}
+unique_teams: {unique_teams}
+number of unique_teams: {len(unique_teams)}
 ''')
 
 
