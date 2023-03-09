@@ -9,7 +9,7 @@ def main():
 
     # first, let's get the most recent data
     # To get TOKEN for viewing unpublished data, go to EUI, log in, then view source, then copy token from browser
-    TOKEN = "Ag9x84NmraWNBJ5nXjzOgpraeoKlrj7xN3nXDkJN08nJ2y1E8EtpCyv5PgE1yK6ey4lO9ywqEaxDw6hBlb9GXIoNxW"
+    TOKEN = ""
     endpoint = "https://ccf-api.hubmapconsortium.org/v1/hubmap/rui_locations.jsonld?token=" + TOKEN
     headers = {"Authorization": "Bearer " + TOKEN}
     data = requests.get(endpoint, headers=headers).json()
