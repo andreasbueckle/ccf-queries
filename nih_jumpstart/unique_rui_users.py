@@ -5,17 +5,18 @@ from dateutil import parser
 
 def main():
     contest_start_date = "2019-01-01 00:00:00"
-    contest_end_date = "2023-01-29 23:59:59"
+    contest_end_date = "2023-04-10 23:59:59"
 
     # first, let's get the most recent data
     # To get TOKEN for viewing unpublished data, go to EUI, log in, then view source, then copy token from browser
     TOKEN = ""
-    endpoint = "https://ccf-api.hubmapconsortium.org/v1/hubmap/rui_locations.jsonld?token=" + TOKEN
+    endpoint = "https://ccf-api.hubmapconsortium.org/v1/hubmap/rui_locations.jsonld"
     headers = {"Authorization": "Bearer " + TOKEN}
     data = requests.get(endpoint, headers=headers).json()
+    print(data)
     # data = json.load("rui_locations.jsonld")
     
-    #load local version of rui_locations.jsonld, copy and pasted from https://ccf-api.hubmapconsortium.org/#/operations/hubmap-rui-locations
+    # load local version of rui_locations.jsonld, copy and pasted from https://ccf-api.hubmapconsortium.org/#/operations/hubmap-rui-locations
     # f = open("rui_locations.jsonld")
     # data = json.load(f)
 
