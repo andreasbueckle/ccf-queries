@@ -3,3 +3,9 @@
 *.ini
 *.gdoc
 playground.py
+
+#Access token
+access_token.txt
+
+#Downloaded CCF API response
+response_1690274691120.json
