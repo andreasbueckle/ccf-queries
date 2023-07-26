@@ -20,7 +20,7 @@ def main():
     as_ct_all = get_data(CCF_API)
 
     # A list of sources for cell type IDs
-    prefixes = ["https://purl.org/ccf/", "http://purl.obolibrary.org/obo/"]
+    prefixes = ["PCL", "CL", "ASCTB-TEMP", "LMHA"]
 
     # pre-fill dict to capture counts ID source
     for source in prefixes:
@@ -30,14 +30,15 @@ def main():
     unique_cell_types = set()
     for pairs in as_ct_all:
         current = pairs['cell_iri']
-        print(current)
         unique_cell_types.add(current)
 
         # get counts
     for id in unique_cell_types:
+        print(id)
         for source in prefixes:
             if source in id:
                 result[source] = result[source] + 1
+                break
 
     # export the counts to JSON
     with open('counts.json', 'w') as f:
@@ -48,7 +49,6 @@ def main():
         wr = csv.writer(f, delimiter=',')
         wr.writerow(["cell_type"])
         for item in unique_cell_types:
-            print(item)
             wr.writerow([item])
 
 
