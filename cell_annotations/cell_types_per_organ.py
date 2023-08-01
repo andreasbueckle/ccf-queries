@@ -52,6 +52,8 @@ def main():
             row = [organ]
             if "NOT_MAPPED" in result[organ]['source_counts']:
                 row.append(result[organ]['source_counts']['NOT_MAPPED'])
+            else:
+                row.append("0")
             wr.writerow(row)
 
 

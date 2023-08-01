@@ -1,6 +1,6 @@
 organ,not_mapped
-blood
-blood_vasculature
+blood,0
+blood_vasculature,0
 bone_marrow,4
 brain,475
 eye,11
@@ -11,22 +11,22 @@ knee,11
 large_intestine,89
 liver,6
 lung,17
-lymph_nodes
-lymph_vasculature
+lymph_nodes,0
+lymph_vasculature,0
 main-bronchus,2
-muscular-system
+muscular-system,0
 ovary,216
 pancreas,9
-peripheral_nervous_system
+peripheral_nervous_system,0
 placenta full term,11
 prostate,7
-skeleton
+skeleton,0
 skin,3
 small_intestine,37
-spinal cord
+spinal cord,0
 spleen,24
-thymus
-trachea
+thymus,0
+trachea,0
 ureter,11
 urinary_bladder,11
 uterus,397
