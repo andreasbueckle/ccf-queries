@@ -1,0 +1,32 @@
+organ,not_mapped
+blood
+blood_vasculature
+bone_marrow,4
+brain,475
+eye,11
+fallopian_tube,86
+heart,4
+kidney,3
+knee,11
+large_intestine,89
+liver,6
+lung,17
+lymph_nodes
+lymph_vasculature
+main-bronchus,2
+muscular-system
+ovary,216
+pancreas,9
+peripheral_nervous_system
+placenta full term,11
+prostate,7
+skeleton
+skin,3
+small_intestine,37
+spinal cord
+spleen,24
+thymus
+trachea
+ureter,11
+urinary_bladder,11
+uterus,397
