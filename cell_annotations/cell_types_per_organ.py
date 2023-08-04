@@ -5,7 +5,7 @@ import csv
 def main():
     """A function to count cells by CT ontology/source per organ
     """
-    # load json file with ASCT+ table data as JSON file
+    # load json file with ASCT+ table data as JSON file (replace with new version after each HRA release)
     with open('data/ccf-asctb-all.json') as f:
         all = json.load(f)
 
@@ -17,6 +17,7 @@ def main():
         result[organ] = {
             # set to capture unique CTs
             'source_counts': {},
+            'unmapped_cell_types': [],
             'unique_cell_types': []
         }
 
@@ -31,6 +32,8 @@ def main():
                     if cell_type['name'] not in result[organ]['unique_cell_types']:
                         result[organ]['unique_cell_types'].append(
                             ":"+cell_type['name'])
+                        result[organ]['unmapped_cell_types'].append(
+                            ":"+cell_type['name'])
 
         # get counts for source instances
         result[organ]['source_counts'] = get_unique_sources(
@@ -40,7 +43,14 @@ def main():
     with open('output/counts_per_organ_per_source.json', 'w') as f:
         json.dump(result, f)
 
-    # export the coounts to CSV
+    # export only unmapped counts to JSON
+    unmapped_result = result
+    for organ in unmapped_result:
+        del unmapped_result[organ]['unique_cell_types']
+    with open('output/unmapped_counts_per_organ_per_source.json', 'w') as f:
+        json.dump(unmapped_result, f)
+
+    # export the complete counts to CSV
     with open('output/counts_per_organ_per_source.csv', 'w', newline='') as f:
         wr = csv.writer(f, delimiter=',')
         # write headers (organ and number of unmapped CTs)
