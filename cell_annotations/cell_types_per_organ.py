@@ -6,7 +6,11 @@ def main():
     """A function to count cells by CT ontology/source per organ
     """
     # load json file with ASCT+ table data as JSON file (replace with new version after each HRA release)
-    with open('data/ccf-asctb-all.json') as f:
+    # with open('data/ccf-asctb-all.json') as f:
+    #     all = json.load(f)
+        
+    # load json file with **DRAFT** ASCT+ table data as JSON file
+    with open('data/ccf-asctb-drafts-all.json') as f:
         all = json.load(f)
 
     # the dict we will be outputting at the end
@@ -40,31 +44,42 @@ def main():
             result[organ]['unique_cell_types'])
 
     # export the counts to JSON
-    with open('output/counts_per_organ_per_source.json', 'w') as f:
+    # with open('output/counts_per_organ_per_source.json', 'w') as f:
+    #     json.dump(result, f)
+        
+    # export the **DRAFT** counts to JSON
+    with open('output/drafts_counts_per_organ_per_source.json', 'w') as f:
         json.dump(result, f)
 
     # export only unmapped counts to JSON
+    # unmapped_result = result
+    # for organ in unmapped_result:
+    #     del unmapped_result[organ]['unique_cell_types']
+    # with open('output/unmapped_counts_per_organ_per_source.json', 'w') as f:
+    #     json.dump(unmapped_result, f)
+        
+    # export only unmapped counts in **DRAFTS** to JSON
     unmapped_result = result
     for organ in unmapped_result:
         del unmapped_result[organ]['unique_cell_types']
-    with open('output/unmapped_counts_per_organ_per_source.json', 'w') as f:
+    with open('output/drafts_unmapped_counts_per_organ_per_source.json', 'w') as f:
         json.dump(unmapped_result, f)
 
     # export the complete counts to CSV
-    with open('output/counts_per_organ_per_source.csv', 'w', newline='') as f:
-        wr = csv.writer(f, delimiter=',')
-        # write headers (organ and number of unmapped CTs)
-        headers = ['organ', 'not_mapped']
-        wr.writerow(headers)
+    # with open('output/counts_per_organ_per_source.csv', 'w', newline='') as f:
+    #     wr = csv.writer(f, delimiter=',')
+    #     # write headers (organ and number of unmapped CTs)
+    #     headers = ['organ', 'not_mapped']
+    #     wr.writerow(headers)
 
-        # iterate thruough result dict and write values to csv
-        for organ in result:
-            row = [organ]
-            if "NOT_MAPPED" in result[organ]['source_counts']:
-                row.append(result[organ]['source_counts']['NOT_MAPPED'])
-            else:
-                row.append("0")
-            wr.writerow(row)
+    #     # iterate thruough result dict and write values to csv
+    #     for organ in result:
+    #         row = [organ]
+    #         if "NOT_MAPPED" in result[organ]['source_counts']:
+    #             row.append(result[organ]['source_counts']['NOT_MAPPED'])
+    #         else:
+    #             row.append("0")
+    #         wr.writerow(row)
 
 
 def get_unique_sources(cell_type_set):
