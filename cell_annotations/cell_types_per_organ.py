@@ -81,7 +81,25 @@ def main():
     #             row.append("0")
     #         wr.writerow(row)
 
+    # export the complete **DRAFT** counts to CSV
+    with open('output/draft_counts_per_organ_per_source.csv', 'w', newline='') as f:
+        wr = csv.writer(f, delimiter=',')
+        # write headers (organ and number of unmapped CTs)
+        headers = ['organ', 'not_mapped']
+        wr.writerow(headers)
 
+        # iterate thruough result dict and write values to csv
+        for organ in result:
+            row = [organ]
+            if "NOT_MAPPED" in result[organ]['source_counts']:
+                row.append(result[organ]['source_counts']['NOT_MAPPED'])
+                for cell in result[organ]['unmapped_cell_types']:
+                    row.append(cell[1:])
+            else:
+                row.append("0")
+            wr.writerow(row)
+
+        
 def get_unique_sources(cell_type_set):
     """A function to isolate unique sources given a set of cel type ID
 
