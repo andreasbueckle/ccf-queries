@@ -4,7 +4,7 @@ import pandas as pd
 
 
 def main():
-    """A function to take a list of HuBMAP IDs and build a CSV file with hubmap_id | uuid | entity_type | registration_status
+    """A function to take a list of HuBMAP IDs and build a CSV file with RUI metadata
     """
 
     # define global vars
