@@ -14,3 +14,22 @@ def get_data(endpoint):
     headers = {"Authorization": "Bearer " + TOKEN}
     data = requests.get(endpoint, headers=headers).json()
     return data
+
+def find_rui_location(data, dataset_id, ENTITY_API_ENDPOINT):
+    """Recursive function to move up the data hierarchy given a hubmap ID to get the RUI location if RUI registered
+
+    Args:
+        data (any): de-serialized JSON dict
+        DATASET_ID (string): a HuBMAP ID for a dataset (constant)
+    """
+    for ancestor in data["direct_ancestors"]:
+        # base case: we arrived at the sample in provenance
+        if ancestor['entity_type'] == "Sample":
+            # if the sample has a rui_location...
+            if "rui_location" in ancestor:
+               return True
+        else:
+            # if not base case, take the HuBMAP ID of the direct_ancestor...
+            one_up = get_data(ENTITY_API_ENDPOINT+ancestor['hubmap_id'])
+            # and try your luck there
+            find_rui_location(one_up, dataset_id)
