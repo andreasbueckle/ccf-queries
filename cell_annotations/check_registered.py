@@ -18,35 +18,33 @@ def main():
             # print(line.strip())
 
         # initialize output
-    result = {
-        'dataset_id' : [],
-        'is_registered':[]
-    }
+    result = {}
 
     # check if IDs are RUI-registered
     for id in ids:
        data = get_data(ENTITY_API_ENDPOINT+id)
        
     #    Add entry to result with default value
-       result['dataset_id'].append(id)
-       find_rui(data, ENTITY_API_ENDPOINT, result)
+       result[id] = False
+       find_rui(data, ENTITY_API_ENDPOINT, result, id)
     
     # print the result, could also be exported to CSV
-    print(result)
+    for key in result:
+        print(f'''{key}:{result[key]}''')
 
         
-def find_rui(data, ENTITY_API_ENDPOINT, result):
+def find_rui(data, ENTITY_API_ENDPOINT, result, id):
     for ancestor in data["direct_ancestors"]:
     # base case: we arrived at the sample in provenance
         if ancestor['entity_type'] == "Sample":
             # if the sample has a rui_location...
             if "rui_location" in ancestor:
-                result['is_registered'].append(True)
+                result[id] = True
         else:
             # if not base case, take the HuBMAP ID of the direct_ancestor...
             one_up = get_data(ENTITY_API_ENDPOINT+ancestor['hubmap_id'])
             # and try your luck there
-            find_rui(one_up, id, result)
+            find_rui(one_up, id, result, id)
             
 
 # driver code
