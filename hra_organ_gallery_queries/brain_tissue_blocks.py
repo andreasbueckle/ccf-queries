@@ -19,7 +19,6 @@ def main():
     for node in scene_endpoint_response:
       try:
         if BRAIN_UBERON_ID in node['ccf_annotations']:
-          print('yes')
           for iri in node['ccf_annotations']:
             if iri in result.keys():
               result[iri] = result[iri] + 1
