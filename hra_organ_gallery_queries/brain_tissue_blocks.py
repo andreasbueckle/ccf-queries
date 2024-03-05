@@ -26,14 +26,16 @@ def main():
               result[iri] = 1
       except:
         continue
-    
-    print(result)
   
     # convert for easier export with pandas
     export = {'iri':[], 'counts':[]}
     
     for key in result:
-      export['iri'].append(key)
+      
+      # format UBERON ID for easier comparison with crosswalk
+      items = key.split('/')
+      formatted = items[len(items)-1].replace("_", ":")
+      export['iri'].append(formatted)
       export['counts'].append(result[key])
     
      # export to CSV
