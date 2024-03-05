@@ -1,4 +1,5 @@
 import requests
+import csv
 import pandas as pd
 
 # UBERON ID and URL to HRA API 
@@ -28,19 +29,35 @@ def main():
         continue
   
     # convert for easier export with pandas
-    export = {'iri':[], 'counts':[]}
+    export = {'iri':[], 'iri_full':[], 'counts':[]}
     
     for key in result:
       
       # format UBERON ID for easier comparison with crosswalk
       items = key.split('/')
       formatted = items[len(items)-1].replace("_", ":")
+      
+      # add values to keys in export dict
       export['iri'].append(formatted)
+      export['iri_full'].append(key)
       export['counts'].append(result[key])
     
-     # export to CSV
+    # export to CSV
     df = pd.DataFrame(data=export)
     df.to_csv("output/brain_collisions.csv", sep=',')    
+
+    keep_scene_nodes = set()
+
+    # grab crosswalk
+    with open('../../ccf-releases/v2.0/models/asct-b-3d-models-crosswalk.csv', newline='') as csvfile:
+      reader = csv.reader(csvfile, delimiter=' ', quotechar='|')
+      for row in reader:
+        for iri in export['iri']:
+          print(iri)
+          if iri in row:
+            print(row)
+    
+    
 
 # driver code
 if __name__ == "__main__":
